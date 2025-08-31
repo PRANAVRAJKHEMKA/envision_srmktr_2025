@@ -1,0 +1,83 @@
+import tkinter as tk
+import random
+
+choices = ["Rock", "Paper", "Scissors"]
+player_score = 0
+computer_score = 0
+rounds_played = 0
+total_rounds = 5  # Can be changed
+
+def play(choice):
+    global player_score, computer_score, rounds_played
+    computer_choice = random.choice(choices)
+    result = determine_winner(choice, computer_choice)
+
+    result_label.config(text=f"You: {choice} | Computer: {computer_choice}\n{result}")
+    score_label.config(text=f"Score -> Player: {player_score} | Computer: {computer_score}")
+
+    rounds_played += 1
+    if rounds_played == total_rounds:
+        end_game()
+
+def determine_winner(player, computer):
+    global player_score, computer_score
+    if player == computer:
+        return "It's a draw!"
+    elif (player == "Rock" and computer == "Scissors") or \
+         (player == "Paper" and computer == "Rock") or \
+         (player == "Scissors" and computer == "Paper"):
+        player_score += 1
+        return "You win this round!"
+    else:
+        computer_score += 1
+        return "Computer wins this round!"
+
+def end_game():
+    if player_score > computer_score:
+        final_result = "You won the game!"
+    elif player_score < computer_score:
+        final_result = "Computer won the game!"
+    else:
+        final_result = "It's a tie!"
+    result_label.config(text=final_result)
+    rock_btn.config(state=tk.DISABLED)
+    paper_btn.config(state=tk.DISABLED)
+    scissors_btn.config(state=tk.DISABLED)
+    play_again_btn.pack()
+
+def play_again():
+    global player_score, computer_score, rounds_played
+    player_score = 0
+    computer_score = 0
+    rounds_played = 0
+    result_label.config(text="")
+    score_label.config(text="Score -> Player: 0 | Computer: 0")
+    rock_btn.config(state=tk.NORMAL)
+    paper_btn.config(state=tk.NORMAL)
+    scissors_btn.config(state=tk.NORMAL)
+    play_again_btn.pack_forget()
+
+# GUI Setup
+root = tk.Tk()
+root.title("Rock, Paper, Scissors")
+root.geometry("400x400")
+
+title_label = tk.Label(root, text="Rock, Paper, Scissors Game", font=("Arial", 16))
+title_label.pack(pady=10)
+
+result_label = tk.Label(root, text="", font=("Arial", 12))
+result_label.pack(pady=10)
+
+score_label = tk.Label(root, text="Score -> Player: 0 | Computer: 0", font=("Arial", 12))
+score_label.pack(pady=10)
+
+rock_btn = tk.Button(root, text="Rock", command=lambda: play("Rock"), width=15)
+rock_btn.pack(pady=5)
+paper_btn = tk.Button(root, text="Paper", command=lambda: play("Paper"), width=15)
+paper_btn.pack(pady=5)
+scissors_btn = tk.Button(root, text="Scissors", command=lambda: play("Scissors"), width=15)
+scissors_btn.pack(pady=5)
+
+play_again_btn = tk.Button(root, text="Play Again", command=play_again, width=15)
+
+root.mainloop()
